@@ -1,2 +1,63 @@
-# clickhouse-prod-analytics
-Product analytics platform built with ClickHouse: funnel analysis, retention cohorts, DAU/WAU/MAU
+# Продуктовая аналитика в ClickHouse 
+
+> Построение продуктовой аналитической платформы на базе ClickHouse Cloud:
+> анализ воронок конверсии, retention-когорт и метрик активности пользователей (DAU/WAU/MAU).
+
+## Описание проекта
+
+Проект симулирует event-log мобильного приложения и реализует полный цикл
+продуктовой аналитики.
+
+### Основные задачи:
+
+- **Проектирование схемы данных** - таблицы events, users, sessions в ClickHouse
+- **Генерация реалистичных данных** - 10 000 пользователей, ~480 000 событий за 3 месяца
+- **Воронка конверсии** - анализ пути от app_open до purchase
+- **Retention-анализ** - когортный анализ возвращаемости по неделям
+- **DAU/WAU/MAU** - метрики активности со скользящим окном
+- **Анализ сессий** - bounce rate и средняя длительность по платформам
+- **Дашборд** - интерактивная визуализация в ClickHouse Cloud
+
+---
+
+## Технологии и инструменты
+Python 3.13
+
+ClickHouse Cloud - колоночное хранилище для аналитики
+
+SQL (ClickHouse dialect) - windowFunnel(), LowCardinality, MergeTree
+
+Pandas - обработка данных
+
+clickhouse-connect - подключение Python к ClickHouse
+
+Faker - генерация реалистичных данных
+
+---
+
+## Схема данных
+
+**events** - все действия пользователей (480k строк)
+- Партиционирование по месяцам: `PARTITION BY toYYYYMM(event_time)`
+- Сортировка: `ORDER BY (user_id, event_time)` - оптимально для воронок
+
+**users** - профили пользователей (10k строк)
+- `LowCardinality(String)` для platform, country, channel
+
+**sessions** - агрегированные сессии (105k строк)
+
+---
+
+## Навыки, продемонстрированные в проекте
+
+- Проектирование колоночных баз данных (ClickHouse)
+- Продуктовая аналитика: воронки, retention, DAU/WAU/MAU
+- Python data pipeline (генерация + загрузка данных)
+- Оптимизация запросов: LowCardinality, партиционирование, MergeTree
+- Визуализация данных в ClickHouse Cloud Dashboards
+
+---
+
+## Лицензия
+
+MIT License
